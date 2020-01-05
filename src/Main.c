@@ -33,18 +33,6 @@ void transformObject(char *originalObjectFileName, char *deformedObjectFileName)
 	fclose(defoFile);
 }
 
-void printFaces(Object *ptr, void *numberOfTriangularFaces) {
-	//TODO need to continue the function.
-}
-
-void printVertexes(Object *ptr, void *numberOfVertexes) {
-	//TODO need to continue the function.
-}
-
-void getTotalArea(Object *ptr, void *totalAreaOfTriangularFaces) {
-	//TODO need to continue the function.
-}
-
 void perform(Scene *scene) {
 	//TODO need to continue the function.
 }

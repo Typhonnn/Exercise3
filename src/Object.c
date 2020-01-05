@@ -4,6 +4,31 @@
 #include <stdio.h>
 #include <string.h>
 
+void getTotalArea(Object *ptr, void *totalAreaOfTriangularFaces) {
+	int i;
+	*(double*) totalAreaOfTriangularFaces = 0;
+	for (i = 0; i < ptr->numberOfFaces; ++i) {
+
+	}
+}
+
+void printVertexes(Object *ptr, void *numberOfVertexes) {
+	*(int*) numberOfVertexes = ptr->numberOfVertexes;
+	printf("Number of Vertexes %d\n", *(int*) numberOfVertexes);
+}
+
+void printFaces(Object *ptr, void *numberOfTriangularFaces) {
+	int i, counter = 0;
+	*(int*) numberOfTriangularFaces = 0;
+	for (i = 0; i < ptr->numberOfFaces; i++) {
+		if (ptr->faces->size == 3) {
+			counter++;
+		}
+	}
+	*(int*) numberOfTriangularFaces = counter;
+	printf("Number of Faces: %d\n", *(int*) numberOfTriangularFaces);
+}
+
 void createFace(Object *obj, char *line) {
 	obj->faces = realloc(obj->faces, (obj->numberOfFaces + 1) * sizeof(Face));
 	obj->faces[obj->numberOfFaces].size = 0;
