@@ -25,7 +25,7 @@ void getTotalArea(Object *ptr, void *totalAreaOfTriangularFaces) {
 					s * (s - a) * (s - b) * (s - c), 0.5);
 		}
 	}
-	printf("%lf", *(double*) totalAreaOfTriangularFaces);
+	printf("Total Area of Triangular Faces: %lf\n", *(double*) totalAreaOfTriangularFaces);
 }
 
 void printVertexes(Object *ptr, void *numberOfVertexes) {
