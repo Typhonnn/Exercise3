@@ -50,12 +50,12 @@ void perform(Scene *scene) {
 }
 
 int main() {
-	//Scene* scene;
-	//Scene* scene1, * scene2;
+	Scene *scene;
+//	Scene* scene1, * scene2;
 
-	//// Create a Scene of Objects received
-	//// from files GoingMerry.obj, Donald.obj, Pony_cartoon.obj
-	//scene = createScene("GoingMerry.obj", "Donald.obj", "Pony_cartoon.obj", NULL);
+// Create a Scene of Objects received
+// from files GoingMerry.obj, Donald.obj, Pony_cartoon.obj
+	scene = createScene("GoingMerry.obj", "Donald.obj", NULL);
 
 	//// Print out all Vertexes
 	//perform(scene, printVertexes, "INT", "The number of vertexes of all objects is");
@@ -84,7 +84,7 @@ int main() {
 	//perform(scene2, printFaces, "INT", "The number of Triangular faces of all objects is");
 	//perform(scene2, getTotalArea, "DOUBLE", "The total area of Triangular faces of all objects is");
 
-	//// Make transformation based on the original object defined in file Donald.obj
+	// Make transformation based on the original object defined in file Donald.obj
 	transformObject("Donald.obj", "StrangeDonald.obj");
 
 	//// Free all memory allocated for the Scene

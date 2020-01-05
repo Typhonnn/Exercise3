@@ -12,3 +12,7 @@ typedef struct {
 } Object;
 
 Object* createObject(char *filename);
+
+void createFace(Object *obj, char *line);
+
+void createVertex(Object *obj, char *line);
