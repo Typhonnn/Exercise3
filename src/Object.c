@@ -3,13 +3,29 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 
 void getTotalArea(Object *ptr, void *totalAreaOfTriangularFaces) {
 	int i;
+	double s, a, b, c;
 	*(double*) totalAreaOfTriangularFaces = 0;
 	for (i = 0; i < ptr->numberOfFaces; ++i) {
-
+		if (ptr->faces[i]->size == 3) {
+			a =	pow(pow((ptr->vertexes[ptr->faces[i]->vertex[0]]->x - ptr->vertexes[ptr->faces[i]->vertex[1]]->x),2) +
+					pow((ptr->vertexes[ptr->faces[i]->vertex[0]]->y	- ptr->vertexes[ptr->faces[i]->vertex[1]]->y),2) +
+					pow((ptr->vertexes[ptr->faces[i]->vertex[0]]->z	- ptr->vertexes[ptr->faces[i]->vertex[1]]->z),2), 0.5);
+			b =	pow(pow((ptr->vertexes[ptr->faces[i]->vertex[0]]->x - ptr->vertexes[ptr->faces[i]->vertex[2]]->x),2) +
+					pow((ptr->vertexes[ptr->faces[i]->vertex[0]]->y	- ptr->vertexes[ptr->faces[i]->vertex[2]]->y),2) +
+					pow((ptr->vertexes[ptr->faces[i]->vertex[0]]->z	- ptr->vertexes[ptr->faces[i]->vertex[2]]->z),2), 0.5);
+			c =	pow(pow((ptr->vertexes[ptr->faces[i]->vertex[1]]->x - ptr->vertexes[ptr->faces[i]->vertex[2]]->x),2) +
+					pow((ptr->vertexes[ptr->faces[i]->vertex[1]]->y	- ptr->vertexes[ptr->faces[i]->vertex[2]]->y),2) +
+					pow((ptr->vertexes[ptr->faces[i]->vertex[1]]->z	- ptr->vertexes[ptr->faces[i]->vertex[2]]->z),2), 0.5);
+			s = (a + b + c) / 2;
+			*(double*) totalAreaOfTriangularFaces += pow(
+					s * (s - a) * (s - b) * (s - c), 0.5);
+		}
 	}
+	printf("%lf", *(double*) totalAreaOfTriangularFaces);
 }
 
 void printVertexes(Object *ptr, void *numberOfVertexes) {
