@@ -1,7 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <errno.h>
-#include <stdint.h>
 #include "Utilities.h"
 
 void transformObject(char *originalObjectFileName, char *deformedObjectFileName) {
@@ -16,7 +14,6 @@ void transformObject(char *originalObjectFileName, char *deformedObjectFileName)
 		printf("Failed Opening File %s! Aborting!", deformedObjectFileName);
 		return;
 	}
-
 	char *line = malloc(sizeof(char));
 	size_t lineSize = 32;
 	size_t bytesRead;
