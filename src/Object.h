@@ -2,7 +2,6 @@
 #include "Face.h"
 #include "Vertex.h"
 
-
 typedef struct {
 	// Array of all Vertexes
 	int numberOfVertexes;

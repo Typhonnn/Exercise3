@@ -1,6 +1,6 @@
 #include "Object.h"
 #include "Vertex.h"
-#include "math.h"
+#include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -28,12 +28,10 @@ void getTotalArea(Object *ptr, void *totalAreaOfTriangularFaces) {
 					s * (s - a) * (s - b) * (s - c), 0.5);
 		}
 	}
-	printf("Total Area of Triangular Faces: %lf\n", *(double*) totalAreaOfTriangularFaces);
 }
 
 void printVertexes(Object *ptr, void *numberOfVertexes) {
 	*(int*) numberOfVertexes = ptr->numberOfVertexes;
-	printf("Number of Vertexes %d\n", *(int*) numberOfVertexes);
 }
 
 void printFaces(Object *ptr, void *numberOfTriangularFaces) {
@@ -45,7 +43,6 @@ void printFaces(Object *ptr, void *numberOfTriangularFaces) {
 		}
 	}
 	*(int*) numberOfTriangularFaces = counter;
-	printf("Number of Faces: %d\n", *(int*) numberOfTriangularFaces);
 }
 
 void createFace(Object *obj, char *line) {

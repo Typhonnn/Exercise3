@@ -21,3 +21,6 @@ void saveScene(Scene *scene, char *fileName, enum FileType type);
 Scene* loadScene(char *fileName, enum FileType type);
 
 void freeScene(Scene *scene);
+
+void perform(Scene *scene, void (*func)(Object*, void*), char *type,
+		char *string);
