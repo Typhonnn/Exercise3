@@ -8,6 +8,6 @@ void saveVertex(Vertex *vertex, FILE *file) {
 
 Vertex createVertex(char *line) {
 	Vertex vertex;
-	sscanf(line, " %*c %f %f %f ", &vertex.x, &vertex.y, &vertex.z);
+	sscanf(line, "%*c %f %f %f", &vertex.x, &vertex.y, &vertex.z);
 	return vertex;
 }

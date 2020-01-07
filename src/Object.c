@@ -45,15 +45,16 @@ Object* loadObject(FILE *file) {
 						"Failed To Reallocate Memory For New Vertexes! ABORTING!");
 				return NULL;
 			}
-			vertexes[numberOfVertexes++] = createVertex(line);
+			vertexes[numberOfVertexes] = createVertex(line);
+			numberOfVertexes++;
 		} else if (line[0] == 'f' && line[1] == ' ') {
+			oldFaces = faces;
 			faces = realloc(oldFaces, (numberOfFaces + 1) * sizeof(Face));
 			if (faces == NULL) {
 				printf("Failed To Reallocate Memory For New Faces! ABORTING!");
 				return NULL;
 			}
 			faces[numberOfFaces++] = createFace(line);
-			oldFaces = faces;
 		}
 		bytesRead = getline(&line, &lineSize, file);
 	}

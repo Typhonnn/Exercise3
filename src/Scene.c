@@ -23,7 +23,7 @@ Scene* createScene(char *fileName, ...) {
 	while (currentFile != NULL) {
 		preObjList = objList;
 		objList->object = createObject(currentFile);
-		objList->next = malloc(sizeof(ObjectList));
+		objList->next = malloc(sizeof(struct ObjectList));
 		if (objList->next == NULL) {
 			printf("Failed To Allocate Memory For New Object List! ABORTING!");
 			return NULL;
