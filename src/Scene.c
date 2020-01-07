@@ -5,7 +5,7 @@
 #include <stdarg.h>
 
 Scene* createScene(char *fileName, ...) {
-	Scene *scene = malloc(sizeof(Scene));
+	Scene *scene = calloc(1, sizeof(Scene));
 	if (scene == NULL) {
 		printf("Failed To Allocate Memory For New Scene! ABORTING!");
 		return NULL;
@@ -92,8 +92,10 @@ Scene* loadScene(char *fileName, enum FileType type) {
 		printf("Failed To Allocate Memory For New Object List! ABORTING!");
 		return NULL;
 	}
+	ObjectList *preObjList = objList;
 	scene->header = objList;
 	while (!feof(file)) {
+		preObjList = objList;
 		objList->object = loadObject(file);
 		objList->next = malloc(sizeof(ObjectList));
 		if (objList->next == NULL) {
@@ -102,6 +104,9 @@ Scene* loadScene(char *fileName, enum FileType type) {
 		}
 		objList = objList->next;
 	}
+	preObjList->next = NULL;
+	free(objList);
+	fclose(file);
 	return scene;
 }
 

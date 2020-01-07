@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define END_OBJECT "endObject"
+#define END_OBJECT "endObject\n"
 
 Object* loadObject(FILE *file) {
 	Object *object = malloc(sizeof(Object));
@@ -28,35 +28,40 @@ Object* loadObject(FILE *file) {
 		printf("Failed To Allocate Memory For New Line! ABORTING!");
 		return NULL;
 	}
-	object->numberOfFaces = 0;
-	object->numberOfVertexes = 0;
+	Vertex *oldVertexes = vertexes;
+	Face *oldFaces = faces;
+	int numberOfVertexes = 0;
+	int numberOfFaces = 0;
 	size_t lineSize = 32;
 	size_t bytesRead;
 	bytesRead = getline(&line, &lineSize, file);
-	while (bytesRead != -1) {
+	while (bytesRead != -1 && strcmp(line, END_OBJECT) != 0) {
 		if (line[0] == 'v' && line[1] == ' ') {
-			vertexes = realloc(vertexes,
-					(object->numberOfVertexes + 1) * sizeof(Vertex));
+			vertexes = realloc(oldVertexes,
+					(numberOfVertexes + 1) * sizeof(Vertex));
 			if (vertexes == NULL) {
 				printf(
 						"Failed To Reallocate Memory For New Vertexes! ABORTING!");
 				return NULL;
 			}
-			vertexes[object->numberOfVertexes++] = *createVertex(line);
+			vertexes[numberOfVertexes++] = *createVertex(line);
+			oldVertexes = vertexes;
 		} else if (line[0] == 'f' && line[1] == ' ') {
-			faces = realloc(faces, (object->numberOfFaces + 1) * sizeof(Face));
+			faces = realloc(oldFaces, (numberOfFaces + 1) * sizeof(Face));
 			if (faces == NULL) {
 				printf("Failed To Reallocate Memory For New Faces! ABORTING!");
 				return NULL;
 			}
-			faces[object->numberOfFaces++] = *createFace(line);
+			faces[numberOfFaces++] = *createFace(line);
+			oldFaces = faces;
 		}
 		bytesRead = getline(&line, &lineSize, file);
 	}
 	object->vertexes = vertexes;
 	object->faces = faces;
+	object->numberOfVertexes = numberOfVertexes;
+	object->numberOfFaces = numberOfFaces;
 	free(line);
-	fclose(file);
 	return object;
 }
 
@@ -159,7 +164,9 @@ Object* createObject(char *filename) {
 		printf("Failed Opening File %s! Aborting!", filename);
 		return NULL;
 	}
-	return loadObject(file);
+	Object *obj = loadObject(file);
+	fclose(file);
+	return obj;
 }
 void transformObject(char *originalObjectFileName, char *deformedObjectFileName) {
 	float x, y, z;
@@ -174,6 +181,10 @@ void transformObject(char *originalObjectFileName, char *deformedObjectFileName)
 		return;
 	}
 	char *line = malloc(sizeof(char));
+	if (line == NULL) {
+		printf("Failed To Allocate Memory For New Line! ABORTING!");
+		return;
+	}
 	size_t lineSize = 32;
 	size_t bytesRead;
 	bytesRead = getline(&line, &lineSize, orgFile);
