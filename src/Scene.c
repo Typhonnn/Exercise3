@@ -31,6 +31,7 @@ Scene* createScene(char *fileName, ...) {
 		currentFile = va_arg(allFile, char*);
 		counter++;
 	}
+	objList = NULL;
 	return scene;
 }
 
@@ -124,7 +125,6 @@ void saveScene(Scene *scene, char *fileName, enum FileType type) {
 		objList = objList->next;
 		counter++;
 	}
-
 	fclose(file);
 }
 

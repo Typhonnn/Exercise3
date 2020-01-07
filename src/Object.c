@@ -13,23 +13,50 @@ Object* loadObject(FILE *file) {
 		printf("Failed To Allocate Memory For New Object! ABORTING!");
 		return NULL;
 	}
+	Vertex *vertexes = malloc(sizeof(Vertex));
+	if (vertexes == NULL) {
+		printf("Failed To Allocate Memory For New Vertexes! ABORTING!");
+		return NULL;
+	}
+	Face *faces = malloc(sizeof(Face));
+	if (faces == NULL) {
+		printf("Failed To Allocate Memory For New Faces! ABORTING!");
+		return NULL;
+	}
 	char *line = malloc(sizeof(char));
+	if (line == NULL) {
+		printf("Failed To Allocate Memory For New Line! ABORTING!");
+		return NULL;
+	}
+	object->numberOfFaces = 0;
+	object->numberOfVertexes = 0;
 	size_t lineSize = 32;
 	size_t bytesRead;
 	bytesRead = getline(&line, &lineSize, file);
-	while (bytesRead != -1 || strcmp(line, END_OBJECT) != 0) {
+	while (bytesRead != -1) {
 		if (line[0] == 'v' && line[1] == ' ') {
-			object->vertexes = realloc(object->vertexes,
+			vertexes = realloc(vertexes,
 					(object->numberOfVertexes + 1) * sizeof(Vertex));
-			object->vertexes[object->numberOfVertexes++] = *createVertex(line);
+			if (vertexes == NULL) {
+				printf(
+						"Failed To Reallocate Memory For New Vertexes! ABORTING!");
+				return NULL;
+			}
+			vertexes[object->numberOfVertexes++] = *createVertex(line);
 		} else if (line[0] == 'f' && line[1] == ' ') {
-			object->faces = realloc(object->faces,
-					(object->numberOfFaces + 1) * sizeof(Face));
-			object->faces[object->numberOfFaces++] = *createFace(line);
+			faces = realloc(faces, (object->numberOfFaces + 1) * sizeof(Face));
+			if (faces == NULL) {
+				printf("Failed To Reallocate Memory For New Faces! ABORTING!");
+				return NULL;
+			}
+			faces[object->numberOfFaces++] = *createFace(line);
 		}
 		bytesRead = getline(&line, &lineSize, file);
 	}
+	object->vertexes = vertexes;
+	object->faces = faces;
 	free(line);
+	fclose(file);
 	return object;
 }
 
@@ -132,31 +159,6 @@ Object* createObject(char *filename) {
 		printf("Failed Opening File %s! Aborting!", filename);
 		return NULL;
 	}
-	Object *object = malloc(sizeof(Object));
-	if (object == NULL) {
-		printf("Failed To Allocate Memory For New Object! ABORTING!");
-		return NULL;
-	}
-	object->numberOfFaces = 0;
-	object->numberOfVertexes = 0;
-	char *line = malloc(sizeof(char));
-	size_t lineSize = 32;
-	size_t bytesRead;
-	bytesRead = getline(&line, &lineSize, file);
-	while (bytesRead != -1) {
-		if (line[0] == 'v' && line[1] == ' ') {
-			object->vertexes = realloc(object->vertexes,
-					(object->numberOfVertexes + 1) * sizeof(Vertex));
-			object->vertexes[object->numberOfVertexes++] = *createVertex(line);
-		} else if (line[0] == 'f' && line[1] == ' ') {
-			object->faces = realloc(object->faces,
-					(object->numberOfFaces + 1) * sizeof(Face));
-			object->faces[object->numberOfFaces++] = *createFace(line);
-		}
-		bytesRead = getline(&line, &lineSize, file);
-	}
-	free(line);
-	fclose(file);
-	return object;
+	return loadObject(file);
 }
 
