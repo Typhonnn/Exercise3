@@ -17,13 +17,19 @@ Face* createFace(char *line) {
 		printf("Failed To Allocate Memory For New Face! ABORTING!");
 		return NULL;
 	}
+	int *vertexes = malloc(sizeof(int));
+	if (vertexes == NULL) {
+		printf("Failed To Allocate Memory For New vertexes! ABORTING!");
+		return NULL;
+	}
 	face->size = 0;
 	char *delimiters = "f ";
 	char *splitLine = strtok(line, delimiters);
 	while (splitLine != NULL) {
-		face->vertex = realloc(face->vertex, (face->size + 1) * sizeof(int));
-		face->vertex[face->size++] = (int) strtol(splitLine, NULL, 10);
+		vertexes = realloc(vertexes, (face->size + 1) * sizeof(int));
+		vertexes[face->size++] = (int) strtol(splitLine, NULL, 10);
 		splitLine = strtok(NULL, delimiters);
 	}
+	face->vertex = vertexes;
 	return face;
 }

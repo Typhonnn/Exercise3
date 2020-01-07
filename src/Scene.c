@@ -1,68 +1,9 @@
 #include "Scene.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdarg.h>
 #include <string.h>
 
-Scene* loadScene(char *fileName, enum FileType type) {
-	int counter = 0;
-	FILE *file;
-	if (type == TextFormat) {
-		file = fopen(fileName, "r");
-	} else if (type == BinaryFormat) {
-		file = fopen(fileName, "rb");
-	}
-	if (file == NULL) {
-		printf("File Open Failed! ABORTING!");
-		return NULL;
-	}
-	Scene *scene = malloc(sizeof(Scene));
-	if (scene == NULL) {
-		printf("Failed To Allocate Memory For New Scene! ABORTING!");
-		return NULL;
-	}
-	ObjectList *objList = malloc(sizeof(ObjectList));
-	if (objList == NULL) {
-		printf("Failed To Allocate Memory For New Object List! ABORTING!");
-		return NULL;
-	}
-	scene->header = objList;
-	while (!feof(file) || counter < 2) {
-		objList->object = loadObject(file);
-		objList->next = malloc(sizeof(ObjectList));
-		if (objList->next == NULL) {
-			printf("Failed To Allocate Memory For New Object List! ABORTING!");
-			return NULL;
-		}
-		objList = objList->next;
-		counter++;
-	}
-	return scene;
-}
-
-void saveScene(Scene *scene, char *fileName, enum FileType type) {
-	int counter = 0;
-	FILE *file;
-	if (type == TextFormat) {
-		file = fopen(fileName, "w");
-	} else if (type == BinaryFormat) {
-		file = fopen(fileName, "wb");
-	}
-	if (file == NULL) {
-		printf("File Open Failed! ABORTING!");
-		return;
-	}
-	fprintf(file, "# Tal Balelty Generated Scene File\n");
-	ObjectList *objList = scene->header;
-	while (objList != NULL && counter < 4) {
-		saveObject(objList->object, file);
-		objList = objList->next;
-		counter++;
-	}
-
-	fclose(file);
-}
-
+#include <stdarg.h>
 Scene* createScene(char *fileName, ...) {
 	Scene *scene = malloc(sizeof(Scene));
 	if (scene == NULL) {
@@ -126,6 +67,65 @@ void perform(Scene *scene, void (*func)(Object*, void*), char *type,
 		}
 		objList = objList->next;
 	}
+}
+
+Scene* loadScene(char *fileName, enum FileType type) {
+	int counter = 0;
+	FILE *file;
+	if (type == TextFormat) {
+		file = fopen(fileName, "r");
+	} else if (type == BinaryFormat) {
+		file = fopen(fileName, "rb");
+	}
+	if (file == NULL) {
+		printf("File Open Failed! ABORTING!");
+		return NULL;
+	}
+	Scene *scene = malloc(sizeof(Scene));
+	if (scene == NULL) {
+		printf("Failed To Allocate Memory For New Scene! ABORTING!");
+		return NULL;
+	}
+	ObjectList *objList = malloc(sizeof(ObjectList));
+	if (objList == NULL) {
+		printf("Failed To Allocate Memory For New Object List! ABORTING!");
+		return NULL;
+	}
+	scene->header = objList;
+	while (!feof(file) || counter < 2) {
+		objList->object = loadObject(file);
+		objList->next = malloc(sizeof(ObjectList));
+		if (objList->next == NULL) {
+			printf("Failed To Allocate Memory For New Object List! ABORTING!");
+			return NULL;
+		}
+		objList = objList->next;
+		counter++;
+	}
+	return scene;
+}
+
+void saveScene(Scene *scene, char *fileName, enum FileType type) {
+	int counter = 0;
+	FILE *file;
+	if (type == TextFormat) {
+		file = fopen(fileName, "w");
+	} else if (type == BinaryFormat) {
+		file = fopen(fileName, "wb");
+	}
+	if (file == NULL) {
+		printf("File Open Failed! ABORTING!");
+		return;
+	}
+	fprintf(file, "# Tal Balelty Generated Scene File\n");
+	ObjectList *objList = scene->header;
+	while (objList != NULL && counter < 4) {
+		saveObject(objList->object, file);
+		objList = objList->next;
+		counter++;
+	}
+
+	fclose(file);
 }
 
 void freeScene(Scene *scene) {

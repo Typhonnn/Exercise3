@@ -1,7 +1,8 @@
 #include "Object.h"
+
 #include <math.h>
+#include <stddef.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
 
 #define END_OBJECT "endObject"
@@ -20,13 +21,11 @@ Object* loadObject(FILE *file) {
 		if (line[0] == 'v' && line[1] == ' ') {
 			object->vertexes = realloc(object->vertexes,
 					(object->numberOfVertexes + 1) * sizeof(Vertex));
-			object->vertexes[object->numberOfVertexes] = *createVertex(line);
-			object->numberOfVertexes++;
+			object->vertexes[object->numberOfVertexes++] = *createVertex(line);
 		} else if (line[0] == 'f' && line[1] == ' ') {
 			object->faces = realloc(object->faces,
 					(object->numberOfFaces + 1) * sizeof(Face));
-			object->faces[object->numberOfFaces] = *createFace(line);
-			object->numberOfFaces++;
+			object->faces[object->numberOfFaces++] = *createFace(line);
 		}
 		bytesRead = getline(&line, &lineSize, file);
 	}
@@ -148,13 +147,11 @@ Object* createObject(char *filename) {
 		if (line[0] == 'v' && line[1] == ' ') {
 			object->vertexes = realloc(object->vertexes,
 					(object->numberOfVertexes + 1) * sizeof(Vertex));
-			object->vertexes[object->numberOfVertexes] = *createVertex(line);
-			object->numberOfVertexes++;
+			object->vertexes[object->numberOfVertexes++] = *createVertex(line);
 		} else if (line[0] == 'f' && line[1] == ' ') {
 			object->faces = realloc(object->faces,
 					(object->numberOfFaces + 1) * sizeof(Face));
-			object->faces[object->numberOfFaces] = *createFace(line);
-			object->numberOfFaces++;
+			object->faces[object->numberOfFaces++] = *createFace(line);
 		}
 		bytesRead = getline(&line, &lineSize, file);
 	}
