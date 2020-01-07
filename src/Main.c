@@ -3,37 +3,6 @@
 #include <stdint.h>
 #include "Utilities.h"
 
-void transformObject(char *originalObjectFileName, char *deformedObjectFileName) {
-	float x, y, z;
-	FILE *orgFile = fopen(originalObjectFileName, "r");
-	if (orgFile == NULL) {
-		printf("Failed Opening File %s! Aborting!", originalObjectFileName);
-		return;
-	}
-	FILE *defoFile = fopen(deformedObjectFileName, "w");
-	if (defoFile == NULL) {
-		printf("Failed Opening File %s! Aborting!", deformedObjectFileName);
-		return;
-	}
-	char *line = malloc(sizeof(char));
-	size_t lineSize = 32;
-	size_t bytesRead;
-	bytesRead = getline(&line, &lineSize, orgFile);
-	while (bytesRead != -1) {
-		if (line[0] == 'v' && line[1] == ' ') {
-			sscanf(line, "%*c %f %f %f", &x, &y, &z);
-			x = 0.3 * x;
-			fprintf(defoFile, "v %f %f %f\n", x, y, z);
-		} else {
-			fprintf(defoFile, "%s", line);
-		}
-		bytesRead = getline(&line, &lineSize, orgFile);
-	}
-	free(line);
-	fclose(orgFile);
-	fclose(defoFile);
-}
-
 int main() {
 	Scene *scene;
 	Scene *scene1, *scene2;

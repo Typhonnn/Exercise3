@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 #include <stdarg.h>
+
 Scene* createScene(char *fileName, ...) {
 	Scene *scene = malloc(sizeof(Scene));
 	if (scene == NULL) {
@@ -15,12 +15,14 @@ Scene* createScene(char *fileName, ...) {
 		printf("Failed To Allocate Memory For New Object List! ABORTING!");
 		return NULL;
 	}
+	ObjectList *preObjList = objList;
 	scene->header = objList;
 	va_list allFile;
 	va_start(allFile, fileName);
 	char *currentFile = fileName;
 	int counter = 0; // REMEMBER TO DELETE!
 	while (currentFile != NULL && counter < 4) {
+		preObjList = objList;
 		objList->object = createObject(currentFile);
 		objList->next = malloc(sizeof(ObjectList));
 		if (objList->next == NULL) {
@@ -31,14 +33,15 @@ Scene* createScene(char *fileName, ...) {
 		currentFile = va_arg(allFile, char*);
 		counter++;
 	}
-	objList = NULL;
+	free(objList);
+	preObjList->next = NULL;
 	return scene;
 }
 
 void perform(Scene *scene, void (*func)(Object*, void*), char *type,
 		char *string) {
 	ObjectList *objList = scene->header;
-	while (objList->object != NULL) {
+	while (objList != NULL) {
 		if (strcmp(type, "INT") == 0) {
 			int *sum = malloc(sizeof(int));
 			func(objList->object, sum);
