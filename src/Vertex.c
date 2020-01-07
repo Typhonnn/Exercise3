@@ -1,5 +1,6 @@
 #include "Vertex.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 void saveVertex(Vertex *vertex, FILE *file) {
 	fprintf(file, "v %f %f %f\n", vertex->x, vertex->y, vertex->z);
