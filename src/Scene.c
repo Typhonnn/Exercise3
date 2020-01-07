@@ -20,8 +20,7 @@ Scene* createScene(char *fileName, ...) {
 	va_list allFile;
 	va_start(allFile, fileName);
 	char *currentFile = fileName;
-	int counter = 0; // REMEMBER TO DELETE!
-	while (currentFile != NULL && counter < 4) {
+	while (currentFile != NULL) {
 		preObjList = objList;
 		objList->object = createObject(currentFile);
 		objList->next = malloc(sizeof(ObjectList));
@@ -31,7 +30,6 @@ Scene* createScene(char *fileName, ...) {
 		}
 		objList = objList->next;
 		currentFile = va_arg(allFile, char*);
-		counter++;
 	}
 	free(objList);
 	preObjList->next = NULL;
@@ -74,7 +72,6 @@ void perform(Scene *scene, void (*func)(Object*, void*), char *type,
 }
 
 Scene* loadScene(char *fileName, enum FileType type) {
-	int counter = 0;
 	FILE *file;
 	if (type == TextFormat) {
 		file = fopen(fileName, "r");
@@ -96,7 +93,7 @@ Scene* loadScene(char *fileName, enum FileType type) {
 		return NULL;
 	}
 	scene->header = objList;
-	while (!feof(file) || counter < 2) {
+	while (!feof(file)) {
 		objList->object = loadObject(file);
 		objList->next = malloc(sizeof(ObjectList));
 		if (objList->next == NULL) {
@@ -104,13 +101,11 @@ Scene* loadScene(char *fileName, enum FileType type) {
 			return NULL;
 		}
 		objList = objList->next;
-		counter++;
 	}
 	return scene;
 }
 
 void saveScene(Scene *scene, char *fileName, enum FileType type) {
-	int counter = 0;
 	FILE *file;
 	if (type == TextFormat) {
 		file = fopen(fileName, "w");
@@ -123,10 +118,9 @@ void saveScene(Scene *scene, char *fileName, enum FileType type) {
 	}
 	fprintf(file, "# Tal Balelty Generated Scene File\n");
 	ObjectList *objList = scene->header;
-	while (objList != NULL && counter < 4) {
+	while (objList != NULL) {
 		saveObject(objList->object, file);
 		objList = objList->next;
-		counter++;
 	}
 	fclose(file);
 }
