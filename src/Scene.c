@@ -5,7 +5,7 @@
 #include <stdarg.h>
 
 Scene* createScene(char *fileName, ...) {
-	Scene *scene = calloc(1, sizeof(Scene));
+	Scene *scene = malloc(sizeof(Scene));
 	if (scene == NULL) {
 		printf("Failed To Allocate Memory For New Scene! ABORTING!");
 		return NULL;
@@ -31,7 +31,6 @@ Scene* createScene(char *fileName, ...) {
 		objList = objList->next;
 		currentFile = va_arg(allFile, char*);
 	}
-	free(objList);
 	preObjList->next = NULL;
 	return scene;
 }
@@ -44,26 +43,22 @@ void perform(Scene *scene, void (*func)(Object*, void*), char *type,
 			int *sum = malloc(sizeof(int));
 			func(objList->object, sum);
 			printf("%s %d\n", string, *sum);
-			free(sum);
 		} else if (strcmp(type, "DOUBLE") == 0) {
 			double *sum = malloc(sizeof(double));
 			func(objList->object, sum);
 			printf("%s %lf\n", string, *sum);
-			free(sum);
 		} else if (strcmp(type, "STR") == 0) {
 			printf("NO FUNCTION FOR STR");
 			break;
 			char *sum = malloc(sizeof(char*));
 			func(objList->object, sum);
 			printf("%s %s\n", string, sum);
-			free(sum);
 		} else if (strcmp(type, "CHAR") == 0) {
 			printf("NO FUNCTION FOR CHAR");
 			break;
 			char *sum = malloc(sizeof(char));
 			func(objList->object, sum);
 			printf("%s %c\n", string, *sum);
-			free(sum);
 		} else {
 			printf("%s is not a valid type", type);
 		}
@@ -105,7 +100,6 @@ Scene* loadScene(char *fileName, enum FileType type) {
 		objList = objList->next;
 	}
 	preObjList->next = NULL;
-	free(objList);
 	fclose(file);
 	return scene;
 }

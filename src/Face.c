@@ -11,31 +11,28 @@ void saveFace(Face *face, FILE *file) {
 	fprintf(file, "\n");
 }
 
-Face* createFace(char *line) {
-	Face *face = malloc(sizeof(Face));
-	if (face == NULL) {
-		printf("Failed To Allocate Memory For New Face! ABORTING!");
-		return NULL;
-	}
+Face createFace(char *line) {
+	Face face;
 	int *vertexes = malloc(sizeof(int));
 	if (vertexes == NULL) {
 		printf("Failed To Allocate Memory For New vertexes! ABORTING!");
-		return NULL;
+		exit(1);
 	}
+	int size = 0;
 	int *oldVertexes = vertexes;
-	face->size = 0;
 	char *delimiters = "f ";
 	char *splitLine = strtok(line, delimiters);
 	while (splitLine != NULL) {
-		vertexes = realloc(oldVertexes, (face->size + 1) * sizeof(int));
+		vertexes = realloc(oldVertexes, (size + 1) * sizeof(int));
 		if (vertexes == NULL) {
 			printf("Failed To Reallocate Memory For New vertexes! ABORTING!");
-			return NULL;
+			exit(1);
 		}
-		vertexes[face->size++] = (int) strtol(splitLine, NULL, 10);
+		vertexes[size++] = strtol(splitLine, NULL, 10);
 		splitLine = strtok(NULL, delimiters);
 		oldVertexes = vertexes;
 	}
-	face->vertex = vertexes;
+	face.size = size;
+	face.vertex = vertexes;
 	return face;
 }
