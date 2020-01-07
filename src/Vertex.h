@@ -1,4 +1,5 @@
 #pragma once
+#include <stdio.h>
 
 typedef struct {
 	float x;	// Coordinates of Vertex
@@ -6,3 +7,6 @@ typedef struct {
 	float z;
 } Vertex;
 
+void saveVertex(Vertex *vertex, FILE *file);
+
+Vertex* createVertex(char *line);

@@ -1,4 +1,5 @@
 #pragma once
+#include <stdio.h>
 #include "Face.h"
 #include "Vertex.h"
 
@@ -13,12 +14,12 @@ typedef struct {
 
 Object* createObject(char *filename);
 
-void createFace(Object *obj, char *line);
-
-void createVertex(Object *obj, char *line);
-
 void printFaces(Object *ptr, void *numberOfTriangularFaces);
 
 void printVertexes(Object *ptr, void *numberOfVertexes);
 
 void getTotalArea(Object *ptr, void *totalAreaOfTriangularFaces);
+
+void saveObject(Object *object, FILE *file);
+
+Object* loadObject(FILE *file);
