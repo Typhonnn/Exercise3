@@ -47,18 +47,6 @@ void perform(Scene *scene, void (*func)(Object*, void*), char *type,
 			double *sum = malloc(sizeof(double));
 			func(objList->object, sum);
 			printf("%s %lf\n", string, *sum);
-		} else if (strcmp(type, "STR") == 0) {
-			printf("NO FUNCTION FOR STR");
-			break;
-			char *sum = malloc(sizeof(char*));
-			func(objList->object, sum);
-			printf("%s %s\n", string, sum);
-		} else if (strcmp(type, "CHAR") == 0) {
-			printf("NO FUNCTION FOR CHAR");
-			break;
-			char *sum = malloc(sizeof(char));
-			func(objList->object, sum);
-			printf("%s %c\n", string, *sum);
 		} else {
 			printf("%s is not a valid type", type);
 		}
@@ -77,29 +65,32 @@ Scene* loadScene(char *fileName, enum FileType type) {
 		printf("File Open Failed! ABORTING!");
 		return NULL;
 	}
-	Scene *scene = malloc(sizeof(Scene));
+	Scene *scene = calloc(1, sizeof(Scene));
 	if (scene == NULL) {
 		printf("Failed To Allocate Memory For New Scene! ABORTING!");
 		return NULL;
 	}
-	ObjectList *objList = malloc(sizeof(ObjectList));
-	if (objList == NULL) {
-		printf("Failed To Allocate Memory For New Object List! ABORTING!");
+	scene->header = calloc(1, sizeof(ObjectList));
+	if (scene->header == NULL) {
+		printf(
+				"Failed To Allocate Memory For New Scene Object List! ABORTING!");
 		return NULL;
 	}
-	ObjectList *preObjList = objList;
-	scene->header = objList;
+	ObjectList *objList = scene->header;
 	while (!feof(file)) {
-		preObjList = objList;
-		objList->object = loadObject(file);
-		objList->next = malloc(sizeof(ObjectList));
+		objList->object = calloc(1, sizeof(Object));
+		if (objList->object == NULL) {
+			printf("Failed To Allocate Memory For New Object! ABORTING!");
+			return NULL;
+		}
+		loadObject(file, objList->object);
+		objList->next = calloc(1, sizeof(ObjectList));
 		if (objList->next == NULL) {
 			printf("Failed To Allocate Memory For New Object List! ABORTING!");
 			return NULL;
 		}
 		objList = objList->next;
 	}
-	preObjList->next = NULL;
 	fclose(file);
 	return scene;
 }

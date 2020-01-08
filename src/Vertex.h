@@ -9,4 +9,4 @@ typedef struct {
 
 void saveVertex(Vertex *vertex, FILE *file);
 
-Vertex createVertex(char *line);
+void createVertex(char *line, Vertex *vertex);

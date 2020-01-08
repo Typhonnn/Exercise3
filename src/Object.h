@@ -22,6 +22,6 @@ void getTotalArea(Object *ptr, void *totalAreaOfTriangularFaces);
 
 void saveObject(Object *object, FILE *file);
 
-Object* loadObject(FILE *file);
+void loadObject(FILE *file, Object *object);
 
 void transformObject(char *originalObjectFileName, char *deformedObjectFileName);

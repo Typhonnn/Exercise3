@@ -8,4 +8,4 @@ typedef struct {
 
 void saveFace(Face *face, FILE *file);
 
-Face createFace(char *line);
+void createFace(char *line, Face *face);
