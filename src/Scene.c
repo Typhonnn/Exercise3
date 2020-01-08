@@ -10,7 +10,7 @@ Scene* createScene(char *fileName, ...) {
 		printf("Failed To Allocate Memory For New Scene! ABORTING!");
 		return NULL;
 	}
-	scene->header = malloc(sizeof(ObjectList));
+	scene->header = malloc(sizeof(struct ObjectList));
 	if (scene->header == NULL) {
 		printf("Failed To Allocate Memory For New Object List! ABORTING!");
 		return NULL;
@@ -39,11 +39,11 @@ void perform(Scene *scene, void (*func)(Object*, void*), char *type,
 	ObjectList *objList = scene->header;
 	while (objList != NULL) {
 		if (strcmp(type, "INT") == 0) {
-			int *sum = malloc(sizeof(int));
+			int *sum = calloc(1, sizeof(int));
 			func(objList->object, sum);
 			printf("%s %d\n", string, *sum);
 		} else if (strcmp(type, "DOUBLE") == 0) {
-			double *sum = malloc(sizeof(double));
+			double *sum = calloc(1, sizeof(double));
 			func(objList->object, sum);
 			printf("%s %lf\n", string, *sum);
 		} else {
@@ -64,12 +64,12 @@ Scene* loadScene(char *fileName, enum FileType type) {
 		printf("File Open Failed! ABORTING!");
 		return NULL;
 	}
-	Scene *scene = calloc(1, sizeof(Scene));
+	Scene *scene = malloc(sizeof(Scene));
 	if (scene == NULL) {
 		printf("Failed To Allocate Memory For New Scene! ABORTING!");
 		return NULL;
 	}
-	scene->header = calloc(1, sizeof(ObjectList));
+	scene->header = malloc(sizeof(struct ObjectList));
 	if (scene->header == NULL) {
 		printf(
 				"Failed To Allocate Memory For New Scene Object List! ABORTING!");
@@ -77,13 +77,13 @@ Scene* loadScene(char *fileName, enum FileType type) {
 	}
 	ObjectList *objList = scene->header;
 	while (!feof(file)) {
-		objList->object = calloc(1, sizeof(Object));
+		objList->object = malloc(sizeof(Object));
 		if (objList->object == NULL) {
 			printf("Failed To Allocate Memory For New Object! ABORTING!");
 			return NULL;
 		}
 		loadObject(file, objList->object);
-		objList->next = calloc(1, sizeof(ObjectList));
+		objList->next = malloc(sizeof(struct ObjectList));
 		if (objList->next == NULL) {
 			printf("Failed To Allocate Memory For New Object List! ABORTING!");
 			return NULL;

@@ -12,7 +12,7 @@ void saveFace(Face *face, FILE *file) {
 }
 
 void createFace(char *line, Face *face) {
-	face->vertex = calloc(1, sizeof(int));
+	face->vertex = calloc(3, sizeof(int));
 	if (face->vertex == NULL) {
 		printf("Failed To Allocate Memory For Face! ABORTING!");
 		return;
@@ -22,10 +22,14 @@ void createFace(char *line, Face *face) {
 	char *delimiters = "f ";
 	char *splitLine = strtok(line, delimiters);
 	while (splitLine != NULL) {
-		vertexes = realloc(face->vertex, (face->size + 1) * sizeof(int));
-		if (vertexes == NULL) {
-			printf("Failed To Reallocate Memory For New vertexes! ABORTING!");
-			return;
+		if (face->size > 2) {
+			face->vertex = vertexes;
+			vertexes = realloc(face->vertex, (face->size + 1) * sizeof(int));
+			if (vertexes == NULL) {
+				printf(
+						"Failed To Reallocate Memory For New vertexes! ABORTING!");
+				return;
+			}
 		}
 		vertexes[face->size++] = strtol(splitLine, NULL, 10);
 		splitLine = strtok(NULL, delimiters);

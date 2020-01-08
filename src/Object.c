@@ -7,23 +7,22 @@
 #define END_OBJECT "endObject\n"
 
 void loadObject(FILE *file, Object *object) {
-	object->vertexes = calloc(1, sizeof(Vertex));
+	object->vertexes = malloc(100000 * sizeof(Vertex));
 	if (object->vertexes == NULL) {
 		printf("Failed To Allocate Memory For Vertexes! ABORTING!");
 		return;
 	}
-	object->faces = calloc(1, sizeof(Face));
+	object->faces = malloc(100000 * sizeof(Face));
 	if (object->faces == NULL) {
 		printf("Failed To Allocate Memory For Faces! ABORTING!");
 		return;
 	}
-	object->faces->vertex = calloc(1, sizeof(int));
+	object->faces->vertex = calloc(3, sizeof(int));
 	if (object->faces->vertex == NULL) {
-
 		printf("Failed To Allocate Memory For Faces -> Vertexes! ABORTING!");
 		return;
 	}
-	char *line = malloc(sizeof(char));
+	char **line = calloc(5, sizeof(char*));
 	if (line == NULL) {
 		printf("Failed To Allocate Memory For New Line! ABORTING!");
 		return;
@@ -32,29 +31,36 @@ void loadObject(FILE *file, Object *object) {
 	Face *faces = object->faces;
 	object->numberOfVertexes = 0;
 	object->numberOfFaces = 0;
-	size_t lineSize = 32;
+	size_t *lineSize = calloc(5, sizeof(size_t));
 	__ssize_t bytesRead;
-	bytesRead = getline(&line, &lineSize, file);
-	while (bytesRead != -1 && strcmp(line, END_OBJECT) != 0) {
-		if (line[0] == 'v' && line[1] == ' ') {
-			vertexes = realloc(object->vertexes,
-					(object->numberOfVertexes + 1) * sizeof(Vertex));
-			if (vertexes == NULL) {
-				printf(
-						"Failed To Reallocate Memory For New Vertexes! ABORTING!");
-				return;
+	bytesRead = getline(line, lineSize, file);
+	while (bytesRead != -1 && strcmp(*line, END_OBJECT) != 0) {
+		if (*line[0] == 'v' && *line[1] == ' ') {
+			if (object->numberOfVertexes > 99999) {
+				vertexes = object->vertexes;
+				vertexes = realloc(object->vertexes,
+						(object->numberOfVertexes + 1) * sizeof(Vertex));
+				if (vertexes == NULL) {
+					printf(
+							"Failed To Reallocate Memory For New Vertexes! ABORTING!");
+					return;
+				}
 			}
-			createVertex(line, &vertexes[object->numberOfVertexes++]);
-		} else if (line[0] == 'f' && line[1] == ' ') {
-			faces = realloc(object->faces,
-					(object->numberOfFaces + 1) * sizeof(Face));
-			if (faces == NULL) {
-				printf("Failed To Reallocate Memory For New Faces! ABORTING!");
-				return;
+			createVertex(*line, &vertexes[object->numberOfVertexes++]);
+		} else if (*line[0] == 'f' && *line[1] == ' ') {
+			if (object->numberOfFaces > 99999) {
+				faces = object->faces;
+				faces = realloc(object->faces,
+						(object->numberOfFaces + 1) * sizeof(Face));
+				if (faces == NULL) {
+					printf(
+							"Failed To Reallocate Memory For New Faces! ABORTING!");
+					return;
+				}
 			}
-			createFace(line, &faces[object->numberOfFaces++]);
+			createFace(*line, &faces[object->numberOfFaces++]);
 		}
-		bytesRead = getline(&line, &lineSize, file);
+		bytesRead = getline(line, lineSize, file);
 	}
 }
 
@@ -157,7 +163,7 @@ Object* createObject(char *filename) {
 		printf("Failed Opening File %s! Aborting!", filename);
 		return NULL;
 	}
-	Object *object = calloc(1, sizeof(Object));
+	Object *object = malloc(sizeof(Object));
 	if (object == NULL) {
 		printf("Failed Allocating Memory For Object! ABORTING!");
 		return NULL;
@@ -166,6 +172,7 @@ Object* createObject(char *filename) {
 	fclose(file);
 	return object;
 }
+
 void transformObject(char *originalObjectFileName, char *deformedObjectFileName) {
 	float x, y, z;
 	FILE *orgFile = fopen(originalObjectFileName, "r");
