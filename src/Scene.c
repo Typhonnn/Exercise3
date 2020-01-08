@@ -10,18 +10,17 @@ Scene* createScene(char *fileName, ...) {
 		printf("Failed To Allocate Memory For New Scene! ABORTING!");
 		return NULL;
 	}
-	ObjectList *objList = malloc(sizeof(ObjectList));
-	if (objList == NULL) {
+	scene->header = malloc(sizeof(ObjectList));
+	if (scene->header == NULL) {
 		printf("Failed To Allocate Memory For New Object List! ABORTING!");
 		return NULL;
 	}
+	ObjectList *objList = scene->header;
 	ObjectList *preObjList = objList;
-	scene->header = objList;
 	va_list allFile;
 	va_start(allFile, fileName);
 	char *currentFile = fileName;
 	while (currentFile != NULL) {
-		preObjList = objList;
 		objList->object = createObject(currentFile);
 		objList->next = malloc(sizeof(struct ObjectList));
 		if (objList->next == NULL) {

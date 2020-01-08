@@ -12,6 +12,11 @@ void saveFace(Face *face, FILE *file) {
 }
 
 void createFace(char *line, Face *face) {
+	face->vertex = calloc(1, sizeof(int));
+	if (face->vertex == NULL) {
+		printf("Failed To Allocate Memory For Face! ABORTING!");
+		return;
+	}
 	int *vertexes = face->vertex;
 	face->size = 0;
 	char *delimiters = "f ";

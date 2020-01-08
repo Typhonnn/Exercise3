@@ -7,6 +7,16 @@
 #define END_OBJECT "endObject\n"
 
 void loadObject(FILE *file, Object *object) {
+	object->vertexes = calloc(1, sizeof(Vertex));
+	if (object->vertexes == NULL) {
+		printf("Failed To Allocate Memory For Vertexes! ABORTING!");
+		return;
+	}
+	object->faces = calloc(1, sizeof(Face));
+	if (object->faces == NULL) {
+		printf("Failed To Allocate Memory For Faces! ABORTING!");
+		return;
+	}
 	char *line = malloc(sizeof(char));
 	if (line == NULL) {
 		printf("Failed To Allocate Memory For New Line! ABORTING!");
