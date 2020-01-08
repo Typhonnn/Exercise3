@@ -17,6 +17,11 @@ void loadObject(FILE *file, Object *object) {
 		printf("Failed To Allocate Memory For Faces! ABORTING!");
 		return;
 	}
+	object->faces->vertex = calloc(1, sizeof(int));
+	if (object->faces->vertex == NULL) {
+		printf("Failed To Allocate Memory For Faces -> Vertexes! ABORTING!");
+		return;
+	}
 	char *line = malloc(sizeof(char));
 	if (line == NULL) {
 		printf("Failed To Allocate Memory For New Line! ABORTING!");
