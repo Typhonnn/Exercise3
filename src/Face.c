@@ -22,15 +22,15 @@ void createFace(char *line, Face *face) {
 	char *delimiters = "f ";
 	char *splitLine = strtok(line, delimiters);
 	while (splitLine != NULL) {
-		if (face->size > 2) {
-			face->vertex = vertexes;
-			vertexes = realloc(face->vertex, (face->size + 1) * sizeof(int));
+//		if (face->size > 2) {
+			face->vertex = realloc(vertexes, (face->size + 1) * sizeof(int));
 			if (vertexes == NULL) {
 				printf(
 						"Failed To Reallocate Memory For New vertexes! ABORTING!");
 				return;
 			}
-		}
+			vertexes = face->vertex;
+//		}
 		vertexes[face->size++] = strtol(splitLine, NULL, 10);
 		splitLine = strtok(NULL, delimiters);
 	}
