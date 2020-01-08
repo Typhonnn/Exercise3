@@ -19,6 +19,7 @@ void loadObject(FILE *file, Object *object) {
 	}
 	object->faces->vertex = calloc(1, sizeof(int));
 	if (object->faces->vertex == NULL) {
+
 		printf("Failed To Allocate Memory For Faces -> Vertexes! ABORTING!");
 		return;
 	}
