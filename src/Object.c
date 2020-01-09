@@ -22,6 +22,18 @@ Object* createObject(char *filename) {
 	return object;
 }
 
+void saveObjectBinary(Object *object, FILE *file) {
+	int i;
+	fwrite(&object->numberOfVertexes, sizeof(int), 1, file);
+	fwrite(object->vertexes, sizeof(Vertex), object->numberOfVertexes, file);
+	fwrite(&object->numberOfFaces, sizeof(int), 1, file);
+	for (i = 0; i < object->numberOfFaces; ++i) {
+		fwrite(&object->faces[i].size, sizeof(int), 1, file);
+		fwrite(object->faces[i].vertex, sizeof(int), object->faces[i].size,
+				file);
+	}
+}
+
 void loadObjectBinary(FILE *file, Object *object) {
 	int i;
 	fread(&object->numberOfVertexes, sizeof(int), 1, file);
@@ -39,10 +51,29 @@ void loadObjectBinary(FILE *file, Object *object) {
 	}
 	for (i = 0; i < object->numberOfFaces; ++i) {
 		fread(&object->faces[i].size, sizeof(int), 1, file);
+		object->faces[i].vertex = malloc(object->faces[i].size * sizeof(int));
+		if (object->faces[i].vertex == NULL) {
+			printf("Failed To Allocate Memory For Faces->Vertexes! ABORTING!");
+			return;
+		}
 		fread(object->faces[i].vertex, sizeof(int), object->faces[i].size,
 				file);
-
 	}
+}
+
+void saveObjectTxt(Object *object, FILE *file) {
+	int i;
+	int numOfVertexes = object->numberOfVertexes;
+	fprintf(file, "\n# Number of Vertexes %d\n", numOfVertexes);
+	for (i = 0; i < numOfVertexes; ++i) {
+		saveVertexTxt(&object->vertexes[i], file);
+	}
+	int numOfFaces = object->numberOfFaces;
+	fprintf(file, "\n# Number of Faces %d\n", numOfFaces);
+	for (i = 0; i < numOfFaces; ++i) {
+		saveFaceTxt(&object->faces[i], file);
+	}
+	fprintf(file, END_OBJECT);
 }
 
 void loadObjectTxt(FILE *file, Object *object) {
@@ -76,7 +107,7 @@ void loadObjectTxt(FILE *file, Object *object) {
 	while (bytesRead != -1 && strcmp(line, "endObject\n") != 0) {
 		if (line[0] == 'v' && line[1] == ' ') {
 			object->vertexes = realloc(vertexes,
-					(object->numberOfVertexes + 100) * sizeof(Vertex));
+					(object->numberOfVertexes + 1) * sizeof(Vertex));
 			if (vertexes == NULL) {
 				printf(
 						"Failed To Reallocate Memory For New Vertexes! ABORTING!");
@@ -86,7 +117,7 @@ void loadObjectTxt(FILE *file, Object *object) {
 			createVertex(line, &object->vertexes[object->numberOfVertexes++]);
 		} else if (line[0] == 'f' && line[1] == ' ') {
 			object->faces = realloc(faces,
-					(object->numberOfFaces + 100) * sizeof(Face));
+					(object->numberOfFaces + 1) * sizeof(Face));
 			if (faces == NULL) {
 				printf("Failed To Reallocate Memory For New Faces! ABORTING!");
 				return;
@@ -96,34 +127,6 @@ void loadObjectTxt(FILE *file, Object *object) {
 		}
 		bytesRead = getline(&line, lineSize, file);
 	}
-}
-
-void saveObjectBinary(Object *object, FILE *file) {
-	int i;
-	fwrite(&object->numberOfVertexes, sizeof(int), 1, file);
-	fwrite(object->vertexes, sizeof(Vertex), object->numberOfVertexes, file);
-	fwrite(&object->numberOfFaces, sizeof(int), 1, file);
-	for (i = 0; i < object->numberOfFaces; ++i) {
-		fwrite(&object->faces[i].size, sizeof(int), 1, file);
-		object->faces[i].vertex = malloc(object->faces[i].size * sizeof(int));
-		fwrite(object->faces[i].vertex, sizeof(int), object->faces[i].size,
-				file);
-	}
-}
-
-void saveObjectTxt(Object *object, FILE *file) {
-	int i;
-	int numOfVertexes = object->numberOfVertexes;
-	fprintf(file, "\n# Number of Vertexes %d\n", numOfVertexes);
-	for (i = 0; i < numOfVertexes; ++i) {
-		saveVertexTxt(&object->vertexes[i], file);
-	}
-	int numOfFaces = object->numberOfFaces;
-	fprintf(file, "\n# Number of Faces %d\n", numOfFaces);
-	for (i = 0; i < numOfFaces; ++i) {
-		saveFaceTxt(&object->faces[i], file);
-	}
-	fprintf(file, END_OBJECT);
 }
 
 void getTotalArea(Object *ptr, void *totalAreaOfTriangularFaces) {
