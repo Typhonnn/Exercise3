@@ -104,7 +104,7 @@ void loadObjectTxt(FILE *file, Object *object) {
 	size_t *lineSize = calloc(5, sizeof(size_t));
 	__ssize_t bytesRead;
 	bytesRead = getline(&line, lineSize, file);
-	while (bytesRead != -1 && strcmp(line, END_OBJECT) != 0) {
+	while (bytesRead != -1 && strstr(line, END_OBJECT) == NULL) {
 		if (line[0] == 'v' && line[1] == ' ') {
 			object->vertexes = realloc(vertexes,
 					(object->numberOfVertexes + 1) * sizeof(Vertex));
