@@ -5,6 +5,8 @@
 #include <string.h>
 
 #define END_OBJECT "endObject"
+#define VERTEX_POS "vertex positions\n"
+#define FACE_POS "face positions\n"
 
 Object* createObject(char *filename) {
 	FILE *file = fopen(filename, "r");
@@ -63,17 +65,15 @@ void loadObjectBinary(FILE *file, Object *object) {
 
 void saveObjectTxt(Object *object, FILE *file) {
 	int i;
-	int numOfVertexes = object->numberOfVertexes;
-	fprintf(file, "\n# Number of Vertexes %d\n", numOfVertexes);
-	for (i = 0; i < numOfVertexes; ++i) {
+	fprintf(file, "# %d %s", object->numberOfVertexes, VERTEX_POS);
+	for (i = 0; i < object->numberOfVertexes; ++i) {
 		saveVertexTxt(&object->vertexes[i], file);
 	}
-	int numOfFaces = object->numberOfFaces;
-	fprintf(file, "\n# Number of Faces %d\n", numOfFaces);
-	for (i = 0; i < numOfFaces; ++i) {
+	fprintf(file, "# %d %s", object->numberOfFaces, FACE_POS);
+	for (i = 0; i < object->numberOfFaces; ++i) {
 		saveFaceTxt(&object->faces[i], file);
 	}
-	fprintf(file, END_OBJECT);
+	fprintf(file, "%s", END_OBJECT);
 }
 
 void loadObjectTxt(FILE *file, Object *object) {
@@ -104,7 +104,7 @@ void loadObjectTxt(FILE *file, Object *object) {
 	size_t *lineSize = calloc(5, sizeof(size_t));
 	__ssize_t bytesRead;
 	bytesRead = getline(&line, lineSize, file);
-	while (bytesRead != -1 && strcmp(line, "endObject\n") != 0) {
+	while (bytesRead != -1 && strcmp(line, END_OBJECT) != 0) {
 		if (line[0] == 'v' && line[1] == ' ') {
 			object->vertexes = realloc(vertexes,
 					(object->numberOfVertexes + 1) * sizeof(Vertex));
