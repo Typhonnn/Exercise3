@@ -65,11 +65,11 @@ void loadObjectBinary(FILE *file, Object *object) {
 
 void saveObjectTxt(Object *object, FILE *file) {
 	int i;
-	fprintf(file, "# %d %s", object->numberOfVertexes, VERTEX_POS);
+	fprintf(file, "\n# %d %s", object->numberOfVertexes, VERTEX_POS);
 	for (i = 0; i < object->numberOfVertexes; ++i) {
 		saveVertexTxt(&object->vertexes[i], file);
 	}
-	fprintf(file, "# %d %s", object->numberOfFaces, FACE_POS);
+	fprintf(file, "\n# %d %s", object->numberOfFaces, FACE_POS);
 	for (i = 0; i < object->numberOfFaces; ++i) {
 		saveFaceTxt(&object->faces[i], file);
 	}
@@ -192,7 +192,8 @@ void getTotalArea(Object *ptr, void *totalAreaOfTriangularFaces) {
 }
 
 void printVertexes(Object *ptr, void *numberOfVertexes) {
-	*(int*) numberOfVertexes += ptr->numberOfVertexes;
+	int total = ptr->numberOfVertexes;
+	*(int*) numberOfVertexes += total;
 }
 
 void printFaces(Object *ptr, void *numberOfTriangularFaces) {

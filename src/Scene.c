@@ -114,44 +114,41 @@ void saveScene(Scene *scene, char *fileName, enum FileType type) {
 void perform(Scene *scene, void (*func)(Object*, void*), char *type,
 		char *string) {
 	ObjectList *objList = scene->header;
-	void *total;
 	if (strcmp(type, "INT") == 0) {
-		total = calloc(1, sizeof(int));
+		void *total = calloc(1, sizeof(int));
 		*(int*) total = 0;
 		while (objList != NULL) {
 			func(objList->object, total);
 			objList = objList->next;
 		}
 		printf("%s %d\n", string, *(int*) total);
+		free(total);
 	} else if (strcmp(type, "DOUBLE") == 0) {
-		total = calloc(1, sizeof(double));
+		void *total = calloc(1, sizeof(double));
 		*(double*) total = 0;
 		while (objList != NULL) {
 			func(objList->object, total);
 			objList = objList->next;
 		}
 		printf("%s %lf\n", string, *(double*) total);
+		free(total);
 	} else {
 		printf("%s is not a valid type", type);
 	}
-	free(total);
 }
 
 void freeScene(Scene *scene) {
-	int i, j;
+	int i;
 	while (scene->header != NULL) {
-		for (i = 0; i < scene->header->object->numberOfVertexes; ++i) {
-			free(scene->header->object->vertexes);
-		}
-		for (i = 0; i < scene->header->object->numberOfFaces; ++i) {
-			for (j = 0; j < scene->header->object->faces[i].size; ++j) {
-				free(scene->header->object->faces[i].vertex);
-			}
-			free(scene->header->object->faces);
-		}
 		ObjectList *objList = scene->header;
-		scene->header = scene->header->next;
+		free(scene->header->object->vertexes);
+		for (i = 0; i < scene->header->object->numberOfFaces; ++i) {
+			free(scene->header->object->faces[i].vertex);
+		}
+		free(scene->header->object->faces);
+		scene->header = objList->next;
 		free(objList);
 	}
 	free(scene);
 }
+

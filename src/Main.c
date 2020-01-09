@@ -1,6 +1,6 @@
 #include "Utilities.h"
 
-int main() {
+void main() {
 	Scene *scene;
 	Scene *scene1, *scene2;
 

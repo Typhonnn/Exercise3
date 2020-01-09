@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 void saveVertexTxt(Vertex *vertex, FILE *file) {
-	fprintf(file, "v  %f  %f  %f \n", vertex->x, vertex->y, vertex->z);
+	fprintf(file, "v  %f  %f  %f\n", vertex->x, vertex->y, vertex->z);
 }
 
 void createVertex(char *line, Vertex *vertex) {
