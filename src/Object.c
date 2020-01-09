@@ -17,12 +17,35 @@ Object* createObject(char *filename) {
 		printf("Failed Allocating Memory For Object! ABORTING!");
 		return NULL;
 	}
-	loadObject(file, object);
+	loadObjectTxt(file, object);
 	fclose(file);
 	return object;
 }
 
-void loadObject(FILE *file, Object *object) {
+void loadObjectBinary(FILE *file, Object *object) {
+	int i;
+	fread(&object->numberOfVertexes, sizeof(int), 1, file);
+	object->vertexes = malloc(object->numberOfVertexes * sizeof(Vertex));
+	if (object->vertexes == NULL) {
+		printf("Failed To Allocate Memory For Vertexes! ABORTING!");
+		return;
+	}
+	fread(object->vertexes, sizeof(Vertex), object->numberOfVertexes, file);
+	fread(&object->numberOfFaces, sizeof(int), 1, file);
+	object->faces = malloc(object->numberOfFaces * sizeof(Face));
+	if (object->faces == NULL) {
+		printf("Failed To Allocate Memory For Faces! ABORTING!");
+		return;
+	}
+	for (i = 0; i < object->numberOfFaces; ++i) {
+		fread(&object->faces[i].size, sizeof(int), 1, file);
+		fread(object->faces[i].vertex, sizeof(int), object->faces[i].size,
+				file);
+
+	}
+}
+
+void loadObjectTxt(FILE *file, Object *object) {
 	object->vertexes = malloc(sizeof(Vertex));
 	if (object->vertexes == NULL) {
 		printf("Failed To Allocate Memory For Vertexes! ABORTING!");
@@ -75,17 +98,30 @@ void loadObject(FILE *file, Object *object) {
 	}
 }
 
-void saveObject(Object *object, FILE *file) {
+void saveObjectBinary(Object *object, FILE *file) {
+	int i;
+	fwrite(&object->numberOfVertexes, sizeof(int), 1, file);
+	fwrite(object->vertexes, sizeof(Vertex), object->numberOfVertexes, file);
+	fwrite(&object->numberOfFaces, sizeof(int), 1, file);
+	for (i = 0; i < object->numberOfFaces; ++i) {
+		fwrite(&object->faces[i].size, sizeof(int), 1, file);
+		object->faces[i].vertex = malloc(object->faces[i].size * sizeof(int));
+		fwrite(object->faces[i].vertex, sizeof(int), object->faces[i].size,
+				file);
+	}
+}
+
+void saveObjectTxt(Object *object, FILE *file) {
 	int i;
 	int numOfVertexes = object->numberOfVertexes;
 	fprintf(file, "\n# Number of Vertexes %d\n", numOfVertexes);
 	for (i = 0; i < numOfVertexes; ++i) {
-		saveVertex(&object->vertexes[i], file);
+		saveVertexTxt(&object->vertexes[i], file);
 	}
 	int numOfFaces = object->numberOfFaces;
 	fprintf(file, "\n# Number of Faces %d\n", numOfFaces);
 	for (i = 0; i < numOfFaces; ++i) {
-		saveFace(&object->faces[i], file);
+		saveFaceTxt(&object->faces[i], file);
 	}
 	fprintf(file, END_OBJECT);
 }
@@ -93,7 +129,6 @@ void saveObject(Object *object, FILE *file) {
 void getTotalArea(Object *ptr, void *totalAreaOfTriangularFaces) {
 	int i;
 	double s, a, b, c;
-	*(double*) totalAreaOfTriangularFaces = 0;
 	for (i = 0; i < ptr->numberOfFaces; ++i) {
 		if (ptr->faces[i].size == 3) {
 			a = pow(2, 2);
@@ -154,18 +189,17 @@ void getTotalArea(Object *ptr, void *totalAreaOfTriangularFaces) {
 }
 
 void printVertexes(Object *ptr, void *numberOfVertexes) {
-	*(int*) numberOfVertexes = ptr->numberOfVertexes;
+	*(int*) numberOfVertexes += ptr->numberOfVertexes;
 }
 
 void printFaces(Object *ptr, void *numberOfTriangularFaces) {
 	int i, counter = 0;
-	*(int*) numberOfTriangularFaces = 0;
 	for (i = 0; i < ptr->numberOfFaces; i++) {
-		if (ptr->faces->size == 3) {
+		if (ptr->faces[i].size == 3) {
 			counter++;
 		}
 	}
-	*(int*) numberOfTriangularFaces = counter;
+	*(int*) numberOfTriangularFaces += counter;
 }
 
 void transformObject(char *originalObjectFileName, char *deformedObjectFileName) {
@@ -180,7 +214,7 @@ void transformObject(char *originalObjectFileName, char *deformedObjectFileName)
 		printf("Failed Opening File %s! Aborting!", deformedObjectFileName);
 		return;
 	}
-	char *line = malloc(sizeof(char));
+	char *line = calloc(1, sizeof(char));
 	if (line == NULL) {
 		printf("Failed To Allocate Memory For New Line! ABORTING!");
 		return;
@@ -200,5 +234,6 @@ void transformObject(char *originalObjectFileName, char *deformedObjectFileName)
 	}
 	fclose(orgFile);
 	fclose(defoFile);
+	free(line);
 }
 

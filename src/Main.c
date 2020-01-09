@@ -6,7 +6,8 @@ int main() {
 
 // Create a Scene of Objects received
 // from files GoingMerry.obj, Donald.obj, Pony_cartoon.obj
-	scene = createScene("GoingMerry.obj", "Donald.obj", NULL);
+	scene = createScene("GoingMerry.obj", "Donald.obj", "Pony_cartoon.obj",
+			NULL);
 
 	// Print out all Vertexes
 	perform(scene, printVertexes, "INT",

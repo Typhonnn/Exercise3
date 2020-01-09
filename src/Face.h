@@ -6,6 +6,6 @@ typedef struct {
 	int *vertex;	// Array of Ids of the vertexes
 } Face;
 
-void saveFace(Face *face, FILE *file);
+void saveFaceTxt(Face *face, FILE *file);
 
 void createFace(char *line, Face *face);

@@ -2,7 +2,8 @@
 #include <string.h>
 #include <stdlib.h>
 
-void saveFace(Face *face, FILE *file) {
+
+void saveFaceTxt(Face *face, FILE *file) {
 	int i;
 	fprintf(file, "f ");
 	for (i = 0; i < face->size; ++i) {

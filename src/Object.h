@@ -20,8 +20,12 @@ void printVertexes(Object *ptr, void *numberOfVertexes);
 
 void getTotalArea(Object *ptr, void *totalAreaOfTriangularFaces);
 
-void saveObject(Object *object, FILE *file);
+void saveObjectBinary(Object *object, FILE *file);
 
-void loadObject(FILE *file, Object *object);
+void saveObjectTxt(Object *object, FILE *file);
+
+void loadObjectBinary(FILE *file, Object *object);
+
+void loadObjectTxt(FILE *file, Object *object);
 
 void transformObject(char *originalObjectFileName, char *deformedObjectFileName);
